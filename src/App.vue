@@ -1,11 +1,9 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { stackHandler } from '@/js/stack'
 
 const { items, push, pop, peek, isEmpty } = stackHandler();
 const pushedItem = ref();
-
-const stackAction = ref('');
 
 const pushStack = (item) => {
   push(item);
@@ -40,6 +38,25 @@ const isEmptyStack = () => {
   }
 }
 
+const stackOverflow = () => {
+  try {
+    stackOverflow();
+  } catch(e) {
+    console.error("stackOverflow >>>", e);
+  }
+}
+
+watch(
+  () => items.value,
+  () => {
+    if (items.value.length > 10) {
+      items.value = [];
+      throw new Error('stack overflow 발생');
+    }
+  }, 
+  { deep: true}
+)
+
 </script>
 
 <template>
@@ -52,6 +69,7 @@ const isEmptyStack = () => {
     <button @click="popStack">pop</button>
     <button @click="peekStack">peek</button>
     <button @click="isEmptyStack">isEmpty</button>
+    <button @click="stackOverflow">stackOverflow</button>
     <div class="enter"></div>
     <h2>----- Stack 상태 -----</h2>
     <div class="stack-container">
